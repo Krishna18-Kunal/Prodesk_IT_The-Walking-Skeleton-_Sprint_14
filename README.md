@@ -1,82 +1,282 @@
-# Sprint 14 — Walking Skeleton (Track B: Full Stack)
+# Sprint 14 – The Walking Skeleton
+## Track B: Full-Stack Authentication MVP
 
-A minimal React + Express + MongoDB authentication MVP:
-- Register with name, email, password
-- Passwords hashed with `bcryptjs` before saving
-- Login returns a signed JWT
-- Protected `/api/auth/me` and `/api/tasks` endpoints
-- React login/register/dashboard routes; dashboard redirects to login without a valid token
+A full-stack authentication application built using React, Node.js, Express.js, MongoDB, Mongoose, bcryptjs, and JSON Web Tokens (JWT).
 
-## Requirements
-- Node.js 18+ (20 LTS recommended)
-- MongoDB local installation OR MongoDB Atlas connection string
+This project implements secure user registration, login, password hashing, JWT-based authentication, protected routes, and user session management.
 
-## 1. Configure the backend
+---
 
-Open CMD in this folder:
+## Project Overview
 
-```bat
-cd backend
-copy .env.example .env
-notepad .env
+The main objective of this project is to develop a working authentication system where users can register, log in, and access protected resources only after successful authentication.
+
+The application uses a React frontend and an Express.js backend connected to MongoDB Atlas.
+
+---
+
+## Features
+
+- User Registration
+- User Login
+- Secure Password Hashing using bcryptjs
+- JWT Token Generation
+- JWT-Based Authentication Middleware
+- Protected Dashboard
+- Protected API Routes
+- User Identity Verification
+- Logout Functionality
+- Automatic Redirect for Unauthenticated Users
+- MongoDB Database Integration
+- Duplicate Email Validation
+- Password Length Validation
+
+---
+
+## Technology Stack
+
+### Frontend
+- React.js
+- Vite
+- React Router DOM
+- JavaScript
+- CSS
+- Fetch API
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- bcryptjs
+- jsonwebtoken
+- dotenv
+- CORS
+
+### Development Tools
+- Visual Studio Code
+- Git & GitHub
+- MongoDB Atlas
+- Postman / Browser Developer Tools
+
+---
+
+## Project Structure
+
+```text
+Sprint14-Authentication-MVP/
+│
+├── backend/
+│   ├── src/
+│   │   ├── middleware/
+│   │   │   └── requireAuth.js
+│   │   │
+│   │   ├── models/
+│   │   │   └── User.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── auth.routes.js
+│   │   │   └── task.routes.js
+│   │   │
+│   │   └── server.js
+│   │
+│   ├── package.json
+│   └── package-lock.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── api.js
+│   │   ├── main.jsx
+│   │   └── style.css
+│   │
+│   ├── index.html
+│   ├── package.json
+│   └── package-lock.json
+│
+├── .gitignore
+├── README.md
+└── Prompts.md
 ```
 
-Set `MONGO_URI` to your MongoDB connection string and replace `JWT_SECRET` with a long random secret. Example local MongoDB URI:
+---
 
-`mongodb://127.0.0.1:27017/sprint14_auth`
+## Created
 
-Save the file. Do not upload `.env` to GitHub.
+### 1. Open Project Directory
 
-## 2. Start backend
+```bash
+cd Prodesk_IT_The-Walking-Skeleton-_Sprint_14
+```
 
-```bat
+### 2. Backend Setup
+
+```bash
 cd backend
 npm install
+```
+
+Create a `.env` file inside the backend directory.
+
+Add the following environment variables:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key_at_least_32_characters
+JWT_EXPIRES_IN=1d
+CLIENT_URL=http://localhost:5173
+```
+
+Replace the MongoDB URI and JWT secret with your own values.
+
+**Never upload your `.env` file to GitHub.**
+
+Start the backend server:
+
+```bash
 npm run dev
 ```
 
-Expected message: `MongoDB connected` and `API running on http://localhost:5000`.
+Backend URL:
 
-Test in browser: `http://localhost:5000/api/health`
+http://localhost:5000
 
-## 3. Start frontend (a second CMD window)
+### 3. Frontend Setup
 
-From the project root:
+Open another terminal:
 
-```bat
+```bash
 cd frontend
-copy .env.example .env
 npm install
+```
+
+Start the frontend:
+
+```bash
 npm run dev
 ```
 
-Open the Vite URL shown, normally `http://localhost:5173`.
+Frontend URL:
 
-## 4. Test the MVP
+http://localhost:5173
 
-1. Open `http://localhost:5173/register`.
-2. Register with a name, email and password (at least 8 characters).
-3. You should reach `/dashboard`, which displays your name, email and MongoDB user ID.
-4. Click Logout.
-5. Try opening `http://localhost:5173/dashboard` directly. It should redirect to `/login`.
-6. Log in using the same email and password. You should return to the dashboard.
-7. Optional API test: use Postman to send `GET http://localhost:5000/api/tasks` with header:
-   `Authorization: Bearer YOUR_TOKEN`
+---
 
-## 5. Prove password hashing (QA demo)
+## API Endpoints
 
-In MongoDB Compass or Atlas:
-- Open database `sprint14_auth`
-- Open collection `users`
-- Find the registered user by email
-- The `password` field must look like a bcrypt hash (starts with `$2a$` or `$2b$`), not the password you typed.
+Base URL: `http://localhost:5000`
 
-Never show or share your JWT secret or real passwords in your demo.
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| GET | /api/health | Check API status | Public |
+| POST | /api/auth/register | Register new user | Public |
+| POST | /api/auth/login | Login user | Public |
+| GET | /api/auth/me | Get authenticated user | Protected |
+| GET | /api/tasks | Access protected task data | Protected |
 
-## What you must change
-1. `backend/.env`: set your own `MONGO_URI` and a strong unique `JWT_SECRET`.
-2. Optional: change `frontend/.env` only if backend is not running at `http://localhost:5000`.
-3. For deployment, set the same variables in Render (backend) and `VITE_API_URL` in Vercel (frontend). Update backend `CLIENT_URL` to your deployed frontend URL.
+### Registration Example
 
-## Important
-This starter intentionally stores the JWT in `localStorage` because Sprint 14's brief explicitly requests it. For a production system, prefer secure, HttpOnly, SameSite cookies and add rate limiting, email verification, password reset and HTTPS.
+POST `/api/auth/register`
+
+```json
+{
+  "name": "Krishna",
+  "email": "krishna123@gmail.com",
+  "password": "your_password"
+}
+```
+
+### Login Example
+
+POST `/api/auth/login`
+
+```json
+{
+  "email": "krishna123@gmail.com",
+  "password": "your_password"
+}
+```
+
+### Protected API Request
+
+Include the JWT token in the Authorization header:
+
+```http
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+---
+
+## Authentication Workflow
+
+1. User enters registration details.
+2. Backend validates the user information.
+3. Password is hashed using bcryptjs.
+4. User data is stored in MongoDB.
+5. User logs in with registered credentials.
+6. Backend verifies the password.
+7. JWT token is generated.
+8. Frontend stores the authentication token.
+9. Protected routes verify the JWT.
+10. Authenticated users can access protected resources.
+
+---
+
+## Security Implementation
+
+- Passwords are stored as bcrypt hashes.
+- JWT tokens are used for authentication.
+- Protected APIs require a valid Bearer token.
+- Invalid or expired tokens are rejected.
+- Duplicate email registrations are prevented.
+- Environment variables are used for sensitive configuration.
+
+Note: This MVP uses browser localStorage for JWT persistence. HTTP-only cookie-based authentication is a possible future enhancement.
+
+---
+
+## Testing
+
+The following functionality has been tested locally:
+
+| Test Case | Result |
+|---|---|
+| User Registration | Passed |
+| User Login | Passed |
+| New User Registration | Passed |
+| Password Hashing | Verified |
+| JWT Token Generation | Passed |
+| Protected Dashboard | Passed |
+| Logout | Passed |
+| Missing Token Request | 401 Unauthorized |
+| Valid Token Request | 200 OK |
+
+---
+
+## Future Enhancements
+
+- Forgot Password and Reset Password
+- User Profile Management
+- Refresh Token Mechanism
+- Role-Based Access Control
+- Email Verification
+- HTTP-Only Cookie Authentication
+- Production Deployment
+
+---
+
+## Repository Information
+
+**Project:** Sprint 14 – The Walking Skeleton
+
+**Track:** Track B – Full-Stack Authentication MVP
+
+
+**Developer:** Krishna Kunal
+
+---
+
+## License
+
+This project is developed for educational and learning purposes as part of Sprint 14 – The Walking Skeleton.
